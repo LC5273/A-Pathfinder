@@ -24,6 +24,9 @@ def fill(surface, color): # color = RGBA tuple
             # surface.set_at((x, y), pygame.Color(r, g, b, a))
             surface.set_at((x, y), pygame.Color(r, g, b))
 
+# def startPoint():
+
+
 # Input the matrix size
 print("Input the number of rows and coloums:")
 rows, coloums = map(int, input().split())
@@ -80,15 +83,18 @@ print(sub[0][0])
 # p[0][0] = pygame.Surface.fill((255, 0, 0))
 
 # FILLING A subSURFACE
-# sub[0][0].fill((255, 0, 0), p1)
-# window.blit(sub[0][0], (0, 0))
+sub[0][0].fill((255, 0, 0), p1)
+window.blit(sub[0][0], (0, 0))
 
 pygame.display.update()
+
+click = 0
 
 while window_running:
     for event in pygame.event.get() :
         if event.type == pygame.QUIT :
             window_running = False
+        # if event.type == pygame.mouse
 
     # screen fill
     #window.fill((255, 0, 0))
