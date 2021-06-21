@@ -15,6 +15,15 @@ pygame.display.set_caption("A* Pathfinding")
 icon = pygame.image.load('icon.png')
 pygame.display.set_icon(icon)
 
+def fill(surface, color): # color = RGBA tuple
+    w, h = surface.get_size()
+    # r, g, b, a = color
+    r, g, b = color
+    for x in range(w):
+        for y in range(h):
+            # surface.set_at((x, y), pygame.Color(r, g, b, a))
+            surface.set_at((x, y), pygame.Color(r, g, b))
+
 # Input the matrix size
 print("Input the number of rows and coloums:")
 rows, coloums = map(int, input().split())
@@ -45,7 +54,7 @@ for row in range(0, rows):
         window.blit(sub[row][coloum], (width * coloum / coloums, heigth * row / rows))
 
 
-# p1 = pygame.Rect(0, 0, 200, 200)
+p1 = pygame.Rect(0, 0, width / coloums - 2, heigth / rows - 2)
 # p2 = pygame.Rect(0, 0, 200, 200)
 #
 # sub1 = canvas.subsurface(p1)
@@ -57,6 +66,22 @@ for row in range(0, rows):
 # window.blit(sub1, (0, 0))
 # window.blit(sub2, (200, 0))
 # pygame.display.update()
+
+# p[0][0].fill((255, 0, 0))
+# pygame.draw.rect(window, (255, 0, 0), p[1][1])
+print(p[0][0])
+print(p1)
+print(sub[0][0])
+
+# fill(sub[1][1], pygame.Color(255, 0, 0, 100))
+
+# pygame.draw.rect(window, (255, 0, 0), p1)
+
+# p[0][0] = pygame.Surface.fill((255, 0, 0))
+
+# FILLING A subSURFACE
+# sub[0][0].fill((255, 0, 0), p1)
+# window.blit(sub[0][0], (0, 0))
 
 pygame.display.update()
 
