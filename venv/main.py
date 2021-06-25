@@ -1,5 +1,6 @@
 import pygame
 import numpy as np
+import time
 
 # Initialising the pygame library
 pygame.init()
@@ -32,16 +33,18 @@ def AlgorithmLee(matrix, startpoint, endpoint, sub, window):
         matrix[i][0] = -1
         matrix[i][coloums + 1] = -1
 
-    matrix[startpoint[0] + 1][startpoint[1] + 1] = 1
-    print(startpoint[0])
-    print(startpoint[1])
+    matrix[startpoint[1] + 1][startpoint[0] + 1] = 1
+    # print(startpoint[0])
+    # print(startpoint[1])
+
     # Lee's Algorithm
+    p = pygame.Rect(0, 0, width / coloums - 2, heigth / rows - 2)
     k = True
     while k:
         k = False
         for i in range(1, rows+1):
             for j in range(1, coloums+1):
-                if matrix[i][j]:
+                if matrix[i][j] > 0:
                     if matrix[i-1][j] == 0:
                         matrix[i-1][j] = matrix[i][j] + 1
                         k = True
@@ -54,6 +57,12 @@ def AlgorithmLee(matrix, startpoint, endpoint, sub, window):
                     if matrix[i][j+1] == 0:
                         matrix[i][j+1] = matrix[i][j] + 1
                         k = True
+
+                    if (i-1, j-1) != startpoint and (i-1, j-1) != endpoint:
+                        sub[j - 1][i - 1].fill((5, 250, 10), p)
+                        window.blit(sub[j-1][i-1], (heigth * (j-1) / rows, width * (i-1) / coloums))
+                        pygame.display.update()
+                    time.sleep(0.001)
 
 
 
@@ -93,6 +102,7 @@ for row in range(0, rows):
 
 p1 = pygame.Rect(0, 0, width / coloums - 2, heigth / rows - 2)
 p2 = pygame.Rect(0, 0, width / coloums - 2, heigth / rows - 2)
+p3 = pygame.Rect(0, 0, width / coloums - 2, heigth / rows - 2)
 # p2 = pygame.Rect(0, 0, 200, 200)
 #
 # sub1 = canvas.subsurface(p1)
@@ -129,29 +139,41 @@ while window_running:
         if event.type == pygame.QUIT :
             window_running = False
         if event.type == pygame.MOUSEBUTTONUP and click == 0:
-            click = click + 1
+            click = 1
             pos = pygame.mouse.get_pos()
-            print(pos[0])
+            # print(pos[0])
             start_row = int(pos[0] / (width / coloums))
             start_coloum = int(pos[1] / (heigth / rows))
 
-            sub[start_row][start_coloum].fill((0, 255, 0), p1)
+            sub[start_row][start_coloum].fill((0, 0, 255), p1)
             window.blit(sub[start_row][start_coloum], (heigth * start_row / rows, width * start_coloum / coloums))
 
-        if event.type == pygame.MOUSEBUTTONUP and click == 1:
+        elif event.type == pygame.MOUSEBUTTONUP and click == 1:
             pos = pygame.mouse.get_pos()
-            print(pos[0])
+            # print(pos[0])
+            print('ENDPOINT')
             end_row = int(pos[0] / (width / coloums))
             end_coloum = int(pos[1] / (heigth / rows))
 
             if start_row != end_row or start_coloum != end_coloum:
-                click = click + 1
-                sub[end_row][end_coloum].fill((0, 0, 255), p2)
+                click = 2
+                matrix[end_coloum + 1][end_row + 1] = -1
+                sub[end_row][end_coloum].fill((255, 0, 255), p2)
                 window.blit(sub[end_row][end_coloum], (heigth * end_row / rows, width * end_coloum / coloums))
 
+        elif event.type == pygame.MOUSEBUTTONUP and click == 2:
+            pos = pygame.mouse.get_pos()
+            obs_row = int(pos[0] / (width / coloums))
+            obs_coloum = int(pos[1] / (heigth / rows))
+
+            if (obs_row, obs_coloum) != (start_row, start_coloum) and (obs_row, obs_coloum) != (end_row, end_coloum):
+                matrix[obs_coloum + 1, obs_row + 1] = -1
+                sub[obs_coloum][obs_row].fill((255, 255, 255), p3)
+                window.blit(sub[obs_coloum][obs_row], (heigth * obs_row / rows, width * obs_coloum / coloums))
+
         if event.type == pygame.KEYDOWN and event.key == pygame.K_s and click == 2:
-            click = click + 1
-            AlgorithmLee(matrix, (start_coloum, start_row), (end_coloum, end_row), sub, window)
+            click = 3
+            AlgorithmLee(matrix, (start_row, start_coloum), (end_row, end_coloum), sub, window)
 
 
     # screen fill
