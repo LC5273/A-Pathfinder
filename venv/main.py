@@ -34,8 +34,6 @@ def AlgorithmLee(matrix, startpoint, endpoint, sub, window):
         matrix[i][coloums + 1] = -1
 
     matrix[startpoint[1] + 1][startpoint[0] + 1] = 1
-    # print(startpoint[0])
-    # print(startpoint[1])
 
     # Lee's Algorithm
     p = pygame.Rect(0, 0, width / coloums - 2, heigth / rows - 2)
@@ -67,6 +65,16 @@ def AlgorithmLee(matrix, startpoint, endpoint, sub, window):
 
 
     print(matrix)
+
+def APathfinding(matrix, startpoint, endpoint, sub, window):
+    # Boardering the matrix
+    matrix[0][0:] = -1
+    matrix[rows + 1][0:] = -1
+    for i in range(1, rows + 1):
+        matrix[i][0] = -1
+        matrix[i][coloums + 1] = -1
+
+    matrix[startpoint[1] + 1][startpoint[0] + 1] = 1
 
 
 # Input the matrix size
