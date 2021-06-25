@@ -24,7 +24,7 @@ def fill(surface, color): # color = RGBA tuple
             # surface.set_at((x, y), pygame.Color(r, g, b, a))
             surface.set_at((x, y), pygame.Color(r, g, b))
 
-def AlgorithmLee(matrix, startpoint, endpoint):
+def AlgorithmLee(matrix, startpoint, endpoint, sub, window):
     # Boardering the matrix
     matrix[0][0:] = -1
     matrix[rows + 1][0:] = -1
@@ -39,10 +39,21 @@ def AlgorithmLee(matrix, startpoint, endpoint):
     k = True
     while k:
         k = False
-        for i in range(1, rows):
-            for j in range(1, coloums):
+        for i in range(1, rows+1):
+            for j in range(1, coloums+1):
                 if matrix[i][j]:
-                    print('yey')
+                    if matrix[i-1][j] == 0:
+                        matrix[i-1][j] = matrix[i][j] + 1
+                        k = True
+                    if matrix[i+1][j] == 0:
+                        matrix[i+1][j] = matrix[i][j] + 1
+                        k = True
+                    if matrix[i][j-1] == 0:
+                        matrix[i][j-1] = matrix[i][j] + 1
+                        k = True
+                    if matrix[i][j+1] == 0:
+                        matrix[i][j+1] = matrix[i][j] + 1
+                        k = True
 
 
 
@@ -140,7 +151,7 @@ while window_running:
 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_s and click == 2:
             click = click + 1
-            AlgorithmLee(matrix, (start_coloum, start_row), (end_coloum, end_row))
+            AlgorithmLee(matrix, (start_coloum, start_row), (end_coloum, end_row), sub, window)
 
 
     # screen fill
