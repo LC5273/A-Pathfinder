@@ -1,6 +1,8 @@
 import pygame
 import numpy as np
 import time
+import math
+import cell
 
 # Initialising the pygame library
 pygame.init()
@@ -15,6 +17,23 @@ window_running = True
 pygame.display.set_caption("A* Pathfinding")
 icon = pygame.image.load('icon.png')
 pygame.display.set_icon(icon)
+
+def isBlocked(matrix, row, col):
+    if matrix[row][col] == -1:
+        return True
+    return False
+
+def isDestination(currentPoint, endPoint):
+    if currentPoint[0] == endPoint[0] and currentPoint[1] == endPoint[1]:
+        return True
+    return False
+
+def calculateHValue(currentPoint, endPoint):
+    return math.sqrt((currentPoint[0] - endPoint[0]) * 2 + (currentPoint[1] - endPoint[1]) * 2)
+
+def tracePath(matrix, endPoint):
+    print('Path: ')
+    # to be completed
 
 def fill(surface, color): # color = RGBA tuple
     w, h = surface.get_size()
@@ -56,13 +75,11 @@ def AlgorithmLee(matrix, startpoint, endpoint, sub, window):
                         matrix[i][j+1] = matrix[i][j] + 1
                         k = True
 
-                    if (i-1, j-1) != startpoint and (i-1, j-1) != endpoint:
+                    if (j-1, i-1) != startpoint and (j-1, i-1) != endpoint:
                         sub[j - 1][i - 1].fill((5, 250, 10), p)
                         window.blit(sub[j-1][i-1], (heigth * (j-1) / rows, width * (i-1) / coloums))
                         pygame.display.update()
                     time.sleep(0.001)
-
-
 
     print(matrix)
 
@@ -76,6 +93,88 @@ def APathfinding(matrix, startpoint, endpoint, sub, window):
 
     matrix[startpoint[1] + 1][startpoint[0] + 1] = 1
 
+    flt_max = 1000000000000
+
+    for i in range(1, rows + 1):
+        for j in range(1, coloums + 1):
+            cells[i][j] = cell.cell(flt_max, flt_max, flt_max, -1 -1)
+
+    i = endpoint[0]
+    j = endpoint[1]
+
+def Astar_search(matrix, startPoint, endPoint):
+
+    # Create list for opened and closed cells
+    open = []
+    closed = []
+
+    # Start and goal cell
+    startCell = cell.cell(startPoint, None)
+    goalCell = cell.cell(endPoint, None)
+
+    open.append(startCell)
+
+    while len(open) > 0:
+        open.sort()
+
+        # Node with lowest cost
+        currentCell = open.pop(0)
+
+        closed.append(currentCell)
+
+        if currentCell == goalCell:
+            path = []
+            while currentCell != startCell:
+                path.append(currentCell.position)
+                currentCell = currentCell.parent
+
+            # Return reversed list
+            return path[::-1]
+
+        # Unzip current node position
+        (x, y) = currentCell.position
+
+        neighbours = [(x - 1, y - 1),
+                      (x - 1, y + 1),
+                      (x - 1, y),
+                      (x, y - 1),
+                      (x, y + 1),
+                      (x + 1, y - 1),
+                      (x + 1, y + 1),
+                      (x + 1, y)]
+
+        for next in neighbours:
+            mapVal = map.get(next)
+
+            # Check if we have an obstacle
+            if matrix[next[0], next[1]] == -1:
+                continue
+
+            # Create a neighbour node
+            neighbour = cell.cell(next, currentCell)  # check if valid
+
+            if neighbour in closed:
+                continue
+
+            # Generate heuristics (Manhattan distance)
+            neighbour.g = abs(neighbour.position[0] - startCell.position[0]) + abs(neighbour.position[1] - startCell.position[1])
+            neighbour.h = abs(neighbour.position[0] - goalCell.position[0]) + abs(neighbour.position[1] - goalCell.position[1])
+            neighbour.f = neighbour.g + neighbour.h
+
+            # Check if neighbour is in the open list and if it has a lower f value
+            if add_to_open(open, neighbour) == True:
+                open.append(neighbour)
+    return None
+
+def add_to_open(open, neighbour):
+    for node in open:
+        if neighbour == node and neighbour.f >= node.f:
+            return False
+    return True
+
+
+
+# TESTING AREA
 
 # Input the matrix size
 print("Input the number of rows and coloums:")
@@ -88,6 +187,7 @@ matrix = np.zeros(shape=(rows + 2, coloums + 2))
 p = []
 sub = []
 matrix1 = []
+cells = []
 for i in range(0, rows):
     row=[]
     for j in range(0, coloums):
@@ -95,6 +195,7 @@ for i in range(0, rows):
     p.append(row)
     sub.append(row)
     matrix1.append(row)
+    cells.append(row)
 
 canvas = pygame.Surface((width, heigth))
 
@@ -182,6 +283,10 @@ while window_running:
         if event.type == pygame.KEYDOWN and event.key == pygame.K_s and click == 2:
             click = 3
             AlgorithmLee(matrix, (start_row, start_coloum), (end_row, end_coloum), sub, window)
+
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_a and click == 2:
+            click = 3
+            #Astar_search()
 
 
     # screen fill
