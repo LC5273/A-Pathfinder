@@ -83,24 +83,6 @@ def AlgorithmLee(matrix, startpoint, endpoint, sub, window):
 
     print(matrix)
 
-def APathfinding(matrix, startpoint, endpoint, sub, window):
-    # Boardering the matrix
-    matrix[0][0:] = -1
-    matrix[rows + 1][0:] = -1
-    for i in range(1, rows + 1):
-        matrix[i][0] = -1
-        matrix[i][coloums + 1] = -1
-
-    matrix[startpoint[1] + 1][startpoint[0] + 1] = 1
-
-    flt_max = 1000000000000
-
-    for i in range(1, rows + 1):
-        for j in range(1, coloums + 1):
-            cells[i][j] = cell.cell(flt_max, flt_max, flt_max, -1 -1)
-
-    i = endpoint[0]
-    j = endpoint[1]
 
 def Astar_search(matrix, startPoint, endPoint):
 
@@ -127,6 +109,7 @@ def Astar_search(matrix, startPoint, endPoint):
             while currentCell != startCell:
                 path.append(currentCell.position)
                 currentCell = currentCell.parent
+            path.append(startCell.position)
 
             # Return reversed list
             return path[::-1]
@@ -144,10 +127,11 @@ def Astar_search(matrix, startPoint, endPoint):
                       (x + 1, y)]
 
         for next in neighbours:
-            mapVal = map.get(next)
+
+            #mapVal = map.get(next)
 
             # Check if we have an obstacle
-            if matrix[next[0], next[1]] == -1:
+            if matrix[next[1], next[0]] == -1:
                 continue
 
             # Create a neighbour node
@@ -172,7 +156,12 @@ def add_to_open(open, neighbour):
             return False
     return True
 
-
+def draw_path(path, sub, window, width, height, rows, coloums):
+    p = pygame.Rect(0, 0, width / coloums - 2, heigth / rows - 2)
+    for element in path:
+        sub[element[0]][element[1]].fill((5, 250, 10), p)
+        window.blit(sub[element[0]][element[1]], (height * (element[0]) / rows, width * (element[1]) / coloums))
+        pygame.display.update()
 
 # TESTING AREA
 
@@ -259,8 +248,6 @@ while window_running:
 
         elif event.type == pygame.MOUSEBUTTONUP and click == 1:
             pos = pygame.mouse.get_pos()
-            # print(pos[0])
-            print('ENDPOINT')
             end_row = int(pos[0] / (width / coloums))
             end_coloum = int(pos[1] / (heigth / rows))
 
@@ -276,7 +263,8 @@ while window_running:
             obs_coloum = int(pos[1] / (heigth / rows))
 
             if (obs_row, obs_coloum) != (start_row, start_coloum) and (obs_row, obs_coloum) != (end_row, end_coloum):
-                matrix[obs_coloum + 1, obs_row + 1] = -1
+                # matrix[obs_coloum + 1, obs_row + 1] = -1
+                matrix[obs_coloum, obs_row] = -1
                 sub[obs_coloum][obs_row].fill((255, 255, 255), p3)
                 window.blit(sub[obs_coloum][obs_row], (heigth * obs_row / rows, width * obs_coloum / coloums))
 
@@ -286,8 +274,14 @@ while window_running:
 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_a and click == 2:
             click = 3
-            #Astar_search()
-
+            path = Astar_search(matrix, (start_row, start_coloum), (end_row, end_coloum))
+            draw_path(path, sub, window, width, heigth, rows, coloums)
+            print(matrix)
+            print('Starting point:')
+            print((start_row, start_coloum))
+            print(path)
+            print('Ending point:')
+            print((end_row, end_coloum))
 
     # screen fill
     #window.fill((255, 0, 0))
