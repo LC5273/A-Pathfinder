@@ -31,10 +31,6 @@ def isDestination(currentPoint, endPoint):
 def calculateHValue(currentPoint, endPoint):
     return math.sqrt((currentPoint[0] - endPoint[0]) * 2 + (currentPoint[1] - endPoint[1]) * 2)
 
-def tracePath(matrix, endPoint):
-    print('Path: ')
-    # to be completed
-
 def fill(surface, color): # color = RGBA tuple
     w, h = surface.get_size()
     # r, g, b, a = color
@@ -106,10 +102,11 @@ def Astar_search(matrix, startPoint, endPoint):
 
         if currentCell == goalCell:
             path = []
+            currentCell = currentCell.parent
             while currentCell != startCell:
                 path.append(currentCell.position)
                 currentCell = currentCell.parent
-            path.append(startCell.position)
+            #path.append(startCell.position)
 
             # Return reversed list
             return path[::-1]
@@ -162,8 +159,6 @@ def draw_path(path, sub, window, width, height, rows, coloums):
         sub[element[0]][element[1]].fill((5, 250, 10), p)
         window.blit(sub[element[0]][element[1]], (height * (element[0]) / rows, width * (element[1]) / coloums))
         pygame.display.update()
-
-# TESTING AREA
 
 # Input the matrix size
 print("Input the number of rows and coloums:")
