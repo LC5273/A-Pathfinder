@@ -18,6 +18,7 @@ pygame.display.set_caption("A* Pathfinding")
 icon = pygame.image.load('icon.png')
 pygame.display.set_icon(icon)
 
+
 def isBlocked(matrix, row, col):
     if matrix[row][col] == -1:
         return True
@@ -159,9 +160,8 @@ def draw_path(path, sub, window, width, height, rows, coloums):
         sub[element[0]][element[1]].fill((5, 250, 10), p)
         window.blit(sub[element[0]][element[1]], (height * (element[0]) / rows, width * (element[1]) / coloums))
         pygame.display.update()
-
 # Input the matrix size
-print("Input the number of rows and coloums:")
+print("Input the number of rows and coloums with a space in-between:")
 rows, coloums = map(int, input().split())
 
 matrix = np.zeros(shape=(rows + 2, coloums + 2))
